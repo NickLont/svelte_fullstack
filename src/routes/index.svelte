@@ -1,5 +1,28 @@
-<script>
+<!-- When the component get rendered, context="module" runs ONCE, before the component is rendered () -->
+<script context="module" lang="ts">
+    import type { Load } from '@sveltejs/kit'
+    // ssr needs a load function
+    export const load: Load = async ({fetch}) => {
+        const res = await fetch("/todos.json")
+        if (res.ok) {
+            const todos = await res.json()
+            return {
+                props: {
+                    todos
+                }
+            }
+        }
+        const {message} = await res.json()
+        return {
+            error: new Error(message)
+        }
+    }
+</script>
+
+<script lang="ts">
     import TodoItem from '$lib/todo-item.svelte'
+
+    export let todos: Todo[] // this is how we specify component props
 
     const title = "Todo"
 </script>
@@ -40,11 +63,10 @@
 <div class="todos">
     <h1>{title}</h1>
     
-    <form action="" method="" class="new">
+    <form action="/todos.json" method="POST" class="new">
         <input type="text" name="text" aria-label="add to do" placeholder="+type to add a todo" />     
     </form>
-    
-    <TodoItem />
-    <TodoItem />
-    <TodoItem />
+    {#each todos as todo }
+        <TodoItem todo={todo} />
+    {/each}
 </div>
