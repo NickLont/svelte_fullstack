@@ -82,7 +82,7 @@ button.toggle {
         <input type="text" value="{todo.text}" />
         <button aria-label="save todo" class="save" />
     </form>
-    <form action="" method="">
+    <form action="/todos/{todo.uid}.json?_method=delete" method="POST">
         <button aria-label="delete todo" class="delete" />
     </form>
 </div>
