@@ -7,6 +7,8 @@ let todos: Todo[] = []
 export const api = (request: Request, data?: Record<string, unknown>) => {
 	let body = {}
 	let status = 500
+	console.log('data: ', data)
+
 	switch (request.method.toUpperCase()) {
 		case 'GET':
 			body = todos
@@ -23,7 +25,10 @@ export const api = (request: Request, data?: Record<string, unknown>) => {
 		case 'PATCH':
 			todos = todos.map((todo) => {
 				if (todo.uid === request.params.uid) {
-					todo.text = data.text as string
+					if (data.text) {
+						todo.text = data.text as string
+					}
+					todo.done = data.done as boolean
 				}
 				return todo
 			})

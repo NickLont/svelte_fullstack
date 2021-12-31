@@ -3,7 +3,7 @@ import type { Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ request, resolve }) => {
 	if (request.query.get('_method')) {
-		if (request.query.get('_method').toLowerCase() === 'delete'){
+		if (request.query.get('_method').toLowerCase() === 'delete') {
 			request.method = 'DELETE'
 		}
 		if (request.query.get('_method').toLowerCase() === 'patch') {
