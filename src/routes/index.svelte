@@ -1,6 +1,7 @@
 <!-- When the component get rendered, context="module" runs ONCE, before the component is rendered () -->
 <script context="module" lang="ts">
 	import type { Load } from '@sveltejs/kit'
+	import { enhanceForm } from '$lib/actions/form'
 	// ssr needs a load function
 	export const load: Load = async ({ fetch }) => {
 		const res = await fetch('/todos.json')
@@ -25,6 +26,22 @@
 	export let todos: Todo[] // this is how we specify component props
 
 	const title = 'Todo'
+
+	const processNewTodoResult = async (res: Response, form: HTMLFormElement) => {
+		const newTodo = await res.json()
+		todos = [...todos, newTodo]
+		form.reset()
+	}
+	const processDeletedTodoResult = (todoId) => {
+		todos = todos.filter(t => t.uid !== todoId)
+	}
+	const processUpdatedTodoResult = async (res: Response) => {
+		const updatedTodo = await res.json()
+		todos = todos.map(t => {
+			if (t.uid === updatedTodo.uid) return updatedTodo
+			return t
+		})
+	}
 </script>
 
 <svelte:head>
@@ -33,12 +50,18 @@
 
 <div class="todos">
 	<h1>{title}</h1>
-
-	<form action="/todos.json" method="POST" class="new">
+	<!-- The use action get triggered when the element gets added to the DOM -->
+	<form action="/todos.json" method="POST" class="new" use:enhanceForm={{
+		result: processNewTodoResult
+	}}>
 		<input type="text" name="text" aria-label="add to do" placeholder="+type to add a todo" />
 	</form>
 	{#each todos as todo}
-		<TodoItem {todo} />
+		<TodoItem 
+			todo={todo} 
+			processDeletedTodoResult={() => processDeletedTodoResult(todo.uid)}
+			processUpdatedTodoResult={processUpdatedTodoResult}
+		/>
 	{/each}
 </div>
 
