@@ -8,7 +8,6 @@ export const get: RequestHandler = (request) => {
 
 export const post: RequestHandler<unknown, FormData> = (request) => {
 	const todo = {
-		uid: `${Date.now()}`, // TODO replace with the db UID
 		created_at: new Date(),
 		text: request.body.get('text'),
 		done: false

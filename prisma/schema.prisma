@@ -1,0 +1,19 @@
+// learn more about this in the docs: 
+// https://www.prisma.io/docs/concepts/components/prisma-schema
+datasource db {
+    provider= "postgresql"
+    // TODO credentials and put to ENV file
+    url="postgresql://postgres:example@localhost:5432/todos"
+}
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native"]
+}
+
+model Todo {
+    uid String @id @default(cuid()) // the db will automatically add an in to our model
+	created_at DateTime
+	text String
+	done Boolean
+}
