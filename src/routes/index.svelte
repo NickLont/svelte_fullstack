@@ -28,19 +28,9 @@
 	const title = 'Todo'
 
 	const processNewTodoResult = async (res: Response, form: HTMLFormElement) => {
-		const newTodo = await res.json()
-		todos = [...todos, newTodo]
+		const newTodos = await res.json()
+		todos = newTodos		
 		form.reset()
-	}
-	const processDeletedTodoResult = (todoId) => {
-		todos = todos.filter((t) => t.uid !== todoId)
-	}
-	const processUpdatedTodoResult = async (res: Response) => {
-		const updatedTodo = await res.json()
-		todos = todos.map((t) => {
-			if (t.uid === updatedTodo.uid) return updatedTodo
-			return t
-		})
 	}
 </script>
 
@@ -62,11 +52,7 @@
 		<input type="text" name="text" aria-label="add to do" placeholder="+type to add a todo" />
 	</form>
 	{#each todos as todo}
-		<TodoItem
-			{todo}
-			processDeletedTodoResult={() => processDeletedTodoResult(todo.uid)}
-			{processUpdatedTodoResult}
-		/>
+		<TodoItem {todo} />
 	{/each}
 </div>
 
