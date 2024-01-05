@@ -1,9 +1,5 @@
 <script lang="ts">
-	import { enhanceForm } from '$lib/actions/form'
-
 	export let todo: Todo
-	export let processDeletedTodoResult: (res: Response) => void
-	export let processUpdatedTodoResult: (res: Response) => void
 </script>
 
 <!-- conditionally add class "done" if todo.done is true -->
@@ -12,15 +8,18 @@
 		<input type="hidden" name="done" value={todo.done ? '' : 'true'} />
 		<button aria-label="Mark todo as {todo.done ? 'not done' : 'done'}" class="toggle" />
 	</form>
-	<form action="/todos/{todo.uid}.json?_method=patch" method="POST" class="text" use:enhanceForm={{
-		result: processUpdatedTodoResult
-	}}>
+	<form
+		action="/todos/{todo.uid}.json?_method=patch"
+		method="POST"
+		class="text"
+	>
 		<input type="text" name="text" value={todo.text} />
 		<button aria-label="save todo" class="save" />
 	</form>
-	<form action="/todos/{todo.uid}.json?_method=delete" method="post" use:enhanceForm={{
-		result: processDeletedTodoResult
-	}}>
+	<form
+		action="/todos/{todo.uid}.json?_method=delete"
+		method="post"
+	>
 		<button aria-label="delete todo" class="delete" />
 	</form>
 </div>
